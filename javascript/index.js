@@ -14,6 +14,9 @@ import {
   getDocs,
   onSnapshot,
   doc,
+  serverTimestamp,
+  query,
+  orderBy,
 } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -40,11 +43,19 @@ const messagediv = document.querySelector(".message-div");
 
 let storedocid = "";
 
-function showMessage(usermesage) {
-  const msgcontainer = document.createElement("div");
-  msgcontainer.classList.add("message-div-inside");
-  messagediv.appendChild(msgcontainer);
-  msgcontainer.textContent = usermesage;
+function showMessage(messages) {
+  const messageNodes=[]
+  messages.forEach((message)=>{
+    const msgcontainer = document.createElement("div");
+    msgcontainer.classList.add("message-div-inside");
+    msgcontainer.textContent = message.message;
+    messageNodes.push(msgcontainer)
+    
+    
+  })
+  messagediv.replaceChildren(...messageNodes)
+  
+ 
 }
 
 // function serverMessageSent(docid) {
@@ -56,23 +67,25 @@ function showMessage(usermesage) {
 //   });
 // }
 
-function allMessage() {
-  getDocs(realdb).then((alldata) => {
-    alldata.docs.forEach((alldatamessage) => {
-      const storealldatamessage = alldatamessage.data();
-      showMessage(storealldatamessage.message);
-    });
-  });
-}
+// function allMessage() {
+//   getDocs(realdb).then((alldata) => {
+//     alldata.docs.forEach((alldatamessage) => {
+//       const storealldatamessage = alldatamessage.data();
+//       showMessage(storealldatamessage.message);
+//     });
+//   });
+// }
 
 function setData(user) {
   profilepic.src = user.photoURL;
   signin.classList.add("btn-sign-display");
   signout.classList.remove("btn-sign-display");
-  onSnapshot(realdb,(data)=>{
+  onSnapshot(query(realdb,orderBy("time")),(data)=>{
     // data.docs.map((message)=>message.data().forEach((finalmessage)=>showMessage(finalmessage.message)))
-    const jatin = data.docs.map((msg) => msg.data());
-    jatin.forEach((finalmessage)=>showMessage(finalmessage.message))
+    const msgfi = data.docs.map((msg) => msg.data());
+  
+    showMessage(msgfi);
+    
   })
 }
 function divRemove() {
@@ -88,15 +101,16 @@ onAuthStateChanged(auth, (user) => {
     signout.addEventListener("click", () => {
       signOUT();
     });
-    allMessage();
+    
     const finaldb = async () => {
       const fetchdocid = await addDoc(realdb, {
         message: `${inputfield.value}`,
+        time:serverTimestamp(),
       });
    
       storedocid = fetchdocid._key.path.segments[1];
-      divRemove()
-      allMessage()
+     
+      
     };
 
     sendbtn.addEventListener("click", () => {
