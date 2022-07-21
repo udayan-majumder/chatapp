@@ -69,6 +69,11 @@ function setData(user) {
   profilepic.src = user.photoURL;
   signin.classList.add("btn-sign-display");
   signout.classList.remove("btn-sign-display");
+  onSnapshot(realdb,(data)=>{
+    // data.docs.map((message)=>message.data().forEach((finalmessage)=>showMessage(finalmessage.message)))
+    const jatin = data.docs.map((msg) => msg.data());
+    jatin.forEach((finalmessage)=>showMessage(finalmessage.message))
+  })
 }
 function divRemove() {
   const revmessagediv = document.querySelectorAll(".message-div-inside");
@@ -88,7 +93,7 @@ onAuthStateChanged(auth, (user) => {
       const fetchdocid = await addDoc(realdb, {
         message: `${inputfield.value}`,
       });
-      console.log(fetchdocid);
+   
       storedocid = fetchdocid._key.path.segments[1];
       divRemove()
       allMessage()
