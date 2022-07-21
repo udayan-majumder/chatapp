@@ -47,14 +47,14 @@ function showMessage(usermesage) {
   msgcontainer.textContent = usermesage;
 }
 
-function serverMessageSent(docid) {
-  const inputmsg = onSnapshot(doc(db, "messages", docid), (res) => {
-    const getmsg = res.data();
-    const finalmsg = getmsg.message;
-    console.log(finalmsg);
-    showMessage(finalmsg);
-  });
-}
+// function serverMessageSent(docid) {
+//   const inputmsg = onSnapshot(doc(db, "messages", docid), (res) => {
+//     const getmsg = res.data();
+//     const finalmsg = getmsg.message;
+//     console.log(finalmsg);
+//     showMessage(finalmsg);
+//   });
+// }
 
 function allMessage() {
   getDocs(realdb).then((alldata) => {
@@ -90,7 +90,8 @@ onAuthStateChanged(auth, (user) => {
       });
       console.log(fetchdocid);
       storedocid = fetchdocid._key.path.segments[1];
-      serverMessageSent(storedocid);
+      divRemove()
+      allMessage()
     };
 
     sendbtn.addEventListener("click", () => {
