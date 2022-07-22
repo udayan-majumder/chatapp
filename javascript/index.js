@@ -67,6 +67,7 @@ function showMessage(messages) {
       }
       else{
        msgcontainer.append(msgtext,msgimage);
+       usermessagearea.style.justifyContent="right";
       }
       
       msgcell.appendChild(msgcontainer)
