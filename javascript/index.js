@@ -33,6 +33,7 @@ const signin = document.getElementById("btn");
 const signout = document.getElementById("btntwo");
 const sendbtn = document.getElementById("sendbtn");
 const inputfield = document.getElementById("input-field");
+const scenechange = document.getElementById("signin-signout")
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const profilepic = document.getElementById("profile-pic");
@@ -62,12 +63,12 @@ function showMessage(messages) {
       msgimage.classList.add("message-image");
       msgimage.src = message.image;
       if(message.userid==auth.currentUser.uid){
-        msgcontainer.append(msgimage,msgtext);
-        msgcontainer.classList.add("left")
+        msgcontainer.append(msgtext,msgimage);
+        msgcontainer.classList.add("right")
       }
       else{
-       msgcontainer.append(msgtext,msgimage);
-       msgcontainer.classList.add("right")
+       msgcontainer.append(msgimage,msgtext);
+       msgcontainer.classList.add("left")
       }
       
       msgcell.appendChild(msgcontainer)
@@ -86,6 +87,8 @@ function showMessage(messages) {
 
 function setData(user) {
   profilepic.src = user.photoURL;
+  scenechange.classList.remove("signin-signout-home");
+  scenechange.classList.add("signin-signout");
   signin.classList.add("btn-sign-display");
   signout.classList.remove("btn-sign-display");
   onSnapshot(query(realdb,orderBy("time")),(data)=>{
@@ -151,6 +154,8 @@ function signOUT() {
   signOut(auth).then(() => {
     profilepic.src =
       "https://ypqa.yp.ieee.org/wp-content/uploads/2020/12/avatar.jpg";
+     scenechange.classList.remove("signin-signout-home");
+     scenechange.classList.add("signin-signout-home");
     signin.classList.remove("btn-sign-display");
     signout.classList.add("btn-sign-display");
   });

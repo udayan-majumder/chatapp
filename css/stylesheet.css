@@ -28,8 +28,15 @@ body{
 .signin-signout{
     display: flex;
     /* align-items: center; */
+    
     justify-content: right;
     padding:10px 5px
+}
+.signin-signout-home{
+    display: flex;
+  
+    justify-content: center;
+    padding-top: 300px;
 }
 
 .btn{
@@ -82,8 +89,8 @@ body{
   
     padding: 19px 0px;
     position: fixed;
-    bottom: 0;
-    right: 165px ;
+    bottom: 57px;
+    right: 166px ;
     background-color: #28282b;
     display: flex;
     gap:10px;
