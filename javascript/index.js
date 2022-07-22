@@ -33,57 +33,62 @@ const signin = document.getElementById("btn");
 const signout = document.getElementById("btntwo");
 const sendbtn = document.getElementById("sendbtn");
 const inputfield = document.getElementById("input-field");
-const messagearea = document.getElementById("user-message-area");
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const profilepic = document.getElementById("profile-pic");
 const db = getFirestore();
 const realdb = collection(db, "messages");
+const wholediv = document.getElementById("wholediv")
 const messagediv = document.querySelector(".message-div");
+const getmsgpics = document.querySelector(".message-div-inside");
+const getmessagetext = document.querySelector(".message-text");
+const getmessageimage = document.querySelector(".message-image");
+const usermessagearea = document.querySelector(".user-message-area");
 
 let storedocid = "";
-
 function showMessage(messages) {
   const messageNodes=[]
+ 
   messages.forEach((message)=>{
-    const msgcontainer = document.createElement("div");
-    msgcontainer.classList.add("message-div-inside");
-    msgcontainer.textContent = message.message;
-    messageNodes.push(msgcontainer)
+    if(message.message){
+      const msgcell = document.createElement("div");
+      msgcell.classList.add("msg-cell")
+      const msgcontainer = document.createElement("div");
+      msgcontainer.classList.add("message-div-inside");
+      const msgtext = document.createElement("div");
+      msgtext.classList.add("message-text");
+      msgtext.textContent = message.message;
+      const msgimage = document.createElement("img");
+      msgimage.classList.add("message-image");
+      msgimage.src = message.image;
+      if(message.userid==auth.currentUser.uid){
+        msgcontainer.append(msgimage,msgtext);
+        usermessagearea.style.justifyContent="left"
+      }
+      else{
+       msgcontainer.append(msgtext,msgimage);
+      }
+      
+      msgcell.appendChild(msgcontainer)
+      messageNodes.push(msgcell);
+    }
+    else{
+      return
+    }
     
     
   })
   messagediv.replaceChildren(...messageNodes)
-  
  
 }
 
-// function serverMessageSent(docid) {
-//   const inputmsg = onSnapshot(doc(db, "messages", docid), (res) => {
-//     const getmsg = res.data();
-//     const finalmsg = getmsg.message;
-//     console.log(finalmsg);
-//     showMessage(finalmsg);
-//   });
-// }
-
-// function allMessage() {
-//   getDocs(realdb).then((alldata) => {
-//     alldata.docs.forEach((alldatamessage) => {
-//       const storealldatamessage = alldatamessage.data();
-//       showMessage(storealldatamessage.message);
-//     });
-//   });
-// }
 
 function setData(user) {
   profilepic.src = user.photoURL;
   signin.classList.add("btn-sign-display");
   signout.classList.remove("btn-sign-display");
   onSnapshot(query(realdb,orderBy("time")),(data)=>{
-    // data.docs.map((message)=>message.data().forEach((finalmessage)=>showMessage(finalmessage.message)))
     const msgfi = data.docs.map((msg) => msg.data());
-  
     showMessage(msgfi);
     
   })
@@ -97,29 +102,38 @@ function divRemove() {
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    
     setData(user);
     signout.addEventListener("click", () => {
       signOUT();
     });
-    
+    wholediv.classList.remove("blank")
     const finaldb = async () => {
       const fetchdocid = await addDoc(realdb, {
         message: `${inputfield.value}`,
         time:serverTimestamp(),
+        image:user.photoURL,
+        userid:user.uid,
+
       });
    
-      storedocid = fetchdocid._key.path.segments[1];
-     
       
     };
-
+     sendbtn.addEventListener("keydown", () => {
+       finaldb();
+       
+     });
     sendbtn.addEventListener("click", () => {
       finaldb();
+      inputfield.value="";
     });
+    
   } else {
+    
     signin.addEventListener("click", () => {
       SignIn();
     });
+    wholediv.classList.add("blank");
     divRemove();
   }
 });
@@ -128,6 +142,7 @@ function SignIn() {
   const provider = new GoogleAuthProvider(app);
   signInWithPopup(auth, provider).then((result) => {
     setData(result.user);
+    
   });
 }
 
@@ -139,3 +154,4 @@ function signOUT() {
     signout.classList.add("btn-sign-display");
   });
 }
+
