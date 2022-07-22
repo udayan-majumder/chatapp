@@ -64,12 +64,19 @@ body{
    position: relative;
    left:200px;
 
-   display: flex;
-   justify-content: right;
    align-items: center;
    overflow-y: scroll;
    overflow-x: hidden;
     border:1px solid black;
+}
+.right{
+    display: flex;
+   justify-content: right;
+}
+.left{
+    display: flex;
+    justify-content: left;
+    
 }
 .user-area{
   
@@ -114,11 +121,10 @@ body{
 }
 
 .message-div-inside{
-    display: flex;
-    justify-content:space-around ;
+  
     gap:15px;
   
-    align-items: right;
+ 
     
 }
 .message-text{

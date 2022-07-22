@@ -43,9 +43,9 @@ const messagediv = document.querySelector(".message-div");
 const getmsgpics = document.querySelector(".message-div-inside");
 const getmessagetext = document.querySelector(".message-text");
 const getmessageimage = document.querySelector(".message-image");
-const usermessagearea = document.querySelector(".user-message-area");
+const usermessagearea = document.getElementById(".user-message-area");
 
-let storedocid = "";
+let storemessage = "";
 function showMessage(messages) {
   const messageNodes=[]
  
@@ -63,11 +63,11 @@ function showMessage(messages) {
       msgimage.src = message.image;
       if(message.userid==auth.currentUser.uid){
         msgcontainer.append(msgimage,msgtext);
-        usermessagearea.style.justifyContent="left"
+        msgcontainer.classList.add("left")
       }
       else{
        msgcontainer.append(msgtext,msgimage);
-       usermessagearea.style.justifyContent="right";
+       msgcontainer.classList.add("right")
       }
       
       msgcell.appendChild(msgcontainer)
